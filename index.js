@@ -51,7 +51,23 @@ async function run() {
     const ordersCol = db.collection("orders");
     const usersCol = db.collection("users");
 
-   
+    // === POST users in DB ===
+    app.post("/users", async (req, res) => {
+      const newUser = req.body;
+      const email = newUser.email;
+      const query = { email: email };
+
+      const existingUser = await usersCol.findOne(query);
+      if (existingUser) {
+        res.send({ message: "User exists!" });
+      } else {
+        const result = await usersCol.insertOne(newUser);
+        res.send(result);
+      }
+    });
+
+
+
     // === Ping MongoDB ===
     console.log("Connected to MongoDB! (crafty DB)");
   } catch (error) {
