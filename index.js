@@ -135,7 +135,29 @@ async function run() {
       res.send(result);
     });
 
-   
+    // === DELETE order (protected) ===
+    app.delete("/orders/:id", async (req, res) => {
+      const id = req.params.id;
+      const email = req.query.email;
+
+      if (!email) {
+        return res
+          .status(401)
+          .send({ message: "Login required: email missing" });
+      }
+
+      const order = await ordersCol.findOne({
+        _id: new ObjectId(id),
+        userEmail: email,
+      });
+      if (!order) {
+        return res.status(403).send({ message: "Not owner or not found" });
+      }
+      await ordersCol.deleteOne({ _id: new ObjectId(id) });
+
+      res.send({ message: "Deleted", deletedId: id });
+    });
+
     // === Ping MongoDB ===
     console.log("Connected to MongoDB! (crafty DB)");
   } catch (error) {
