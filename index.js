@@ -72,6 +72,23 @@ async function run() {
       res.send(result);
     });
 
+    // === GET product by ID or Slug ===
+    app.get("/products/:id", async (req, res) => {
+      const param = req.params.id;
+      let query;
+      if (ObjectId.isValid(param)) {
+        query = { _id: new ObjectId(param) };
+      } else {
+        query = { slug: param };
+      }
+      const result = await productsCol.findOne(query);
+      if (!result) {
+        return res.status(404).send({ message: "Product not found" });
+      }
+      res.send(result);
+    });
+
+   
     // === Ping MongoDB ===
     console.log("Connected to MongoDB! (crafty DB)");
   } catch (error) {
