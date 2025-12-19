@@ -88,7 +88,24 @@ async function run() {
       res.send(result);
     });
 
-   
+    // === POST product from UI ===
+    app.post("/products", async (req, res) => {
+      const product = req.body;
+      if (!product.email) {
+        return res.status(401).send({ message: "User email required" });
+      }
+      const ip =
+        req.headers["x-forwarded-for"]?.split(",")[0] ||
+        req.socket.remoteAddress;
+      product.userIp = ip;
+
+      product.slug = createSlug(product.name);
+      product.createdAt = new Date();
+      const result = await productsCol.insertOne(product);
+      res.send(result);
+    });
+
+
     // === Ping MongoDB ===
     console.log("Connected to MongoDB! (crafty DB)");
   } catch (error) {
