@@ -66,7 +66,11 @@ async function run() {
       }
     });
 
-
+    // === GET all products (public) ===
+    app.get("/products", async (req, res) => {
+      const result = await productsCol.find().sort({ createdAt: -1 }).toArray();
+      res.send(result);
+    });
 
     // === Ping MongoDB ===
     console.log("Connected to MongoDB! (crafty DB)");
