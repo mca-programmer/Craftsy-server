@@ -26,8 +26,32 @@ const client = new MongoClient(uri, {
   },
 });
 
+// Test route
+app.get("/", (req, res) => {
+  res.send("Craftsy API is running!");
+});
 
+// Helper to create slugs
+const createSlug = (name) => {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+};
 
+async function run() {
+  try {
+    // Connect to MongoDB
+    // await client.connect();
+
+    const db = client.db("Craftsy");
+    const productsCol = db.collection("products");
+    const ordersCol = db.collection("orders");
+    const usersCol = db.collection("users");
+
+   
     // === Ping MongoDB ===
     console.log("Connected to MongoDB! (crafty DB)");
   } catch (error) {
