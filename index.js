@@ -105,7 +105,21 @@ async function run() {
       res.send(result);
     });
 
+    // ----------------------------------------------------------------- //
 
+    // === POST new order (protected) ===
+    app.post("/orders", async (req, res) => {
+      const orderData = req.body;
+      const email = orderData.email;
+      if (!email) {
+        return res.status(401).send({ message: "Login required to order" });
+      }
+      orderData.orderedAt = new Date();
+      const result = await ordersCol.insertOne(orderData);
+      res.send(result);
+    });
+
+    
     // === Ping MongoDB ===
     console.log("Connected to MongoDB! (crafty DB)");
   } catch (error) {
