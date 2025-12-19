@@ -119,7 +119,23 @@ async function run() {
       res.send(result);
     });
 
-    
+    // === GET my orders (protected) ===
+    app.get("/orders", async (req, res) => {
+      const email = req.query.email;
+      if (!email) {
+        return res
+          .status(401)
+          .send({ message: "Login required: email missing" });
+      }
+
+      const result = await ordersCol
+        .find({ userEmail: email })
+        .sort({ createdAt: -1 })
+        .toArray();
+      res.send(result);
+    });
+
+   
     // === Ping MongoDB ===
     console.log("Connected to MongoDB! (crafty DB)");
   } catch (error) {
